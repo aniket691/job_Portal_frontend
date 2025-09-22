@@ -15,7 +15,7 @@ const CompaniesTable = () => {
 
   useEffect(() => {
     // Fetch data from the backend
-    axios.get('http://localhost:8080/api/joblistings') // Replace with your actual endpoint
+    axios.get('https://jobportalbackend-production-d549.up.railway.app/api/joblistings') // Replace with your actual endpoint
       .then((response) => {
         setJobListings(response.data);
       })
@@ -36,7 +36,7 @@ const CompaniesTable = () => {
   const handleFormSubmit = (e) => {
     e.preventDefault();
     // Send the JSON data directly to the backend
-    axios.post('http://localhost:8080/api/joblistings', formData)
+    axios.post('https://jobportalbackend-production-d549.up.railway.app/api/joblistings', formData)
       .then(response => {
         setJobListings(prev => [...prev, response.data]);
         setShowForm(false);

@@ -31,7 +31,7 @@ const FeedbackForm = () => {
         jobSeekerId, // JobSeeker ID retrieved from session storage
       };
 
-      const response = await axios.post('http://localhost:8080/api/feedbacks', feedbackData);
+      const response = await axios.post('https://jobportalbackend-production-d549.up.railway.app/api/feedbacks', feedbackData);
 
       if (response.status === 200) {
         setMessage('Feedback submitted successfully!');

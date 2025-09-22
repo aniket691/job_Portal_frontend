@@ -27,7 +27,7 @@ function Login() {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/jobseekers/login",
+        "https://jobportalbackend-production-d549.up.railway.app/api/jobseekers/login",
         { email, password }
       );
 

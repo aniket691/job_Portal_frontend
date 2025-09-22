@@ -34,14 +34,27 @@ function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
-  const [resume, setResume] = useState(null); // Updated to handle file uploads
+  const [resume, setResume] = useState(null);
   const [profileSummary, setProfileSummary] = useState("");
   const [experience, setExperience] = useState(0);
-  const [skillId, setSkillId] = useState(1);
+  const [skillId, setSkillId] = useState("");
   const [location, setLocation] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  // Hardcoded list of skills
+  const skills = [
+    { id: 1, name: "JavaScript" },
+    { id: 2, name: "React" },
+    { id: 3, name: "AngularJS" },
+    { id: 4, name: "Node.js" },
+    { id: 5, name: "Python" },
+    { id: 6, name: ".NET" },
+    { id: 7, name: "Java" },
+    { id: 8, name: "Oracle" },
+    { id: 9, name: "PostgreSQL" },
+  ];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -62,10 +75,10 @@ function Signup() {
         setProfileSummary(value);
         break;
       case "experience":
-        setExperience(parseInt(value, 10));
+        setExperience(parseInt(value, 10) || 0);
         break;
       case "skillId":
-        setSkillId(parseInt(value, 10));
+        setSkillId(parseInt(value, 10) || "");
         break;
       case "location":
         setLocation(value);
@@ -76,7 +89,7 @@ function Signup() {
   };
 
   const handleFileChange = (e) => {
-    setResume(e.target.files[0]); // Handle file selection
+    setResume(e.target.files[0]);
   };
 
   const handleSubmit = async (e) => {
@@ -89,6 +102,7 @@ function Signup() {
       !mobileNumber ||
       !profileSummary ||
       experience < 0 ||
+      !skillId ||
       !location
     ) {
       setError("Please fill all required fields.");
@@ -99,33 +113,44 @@ function Signup() {
     setError("");
     setSuccess("");
 
-    // Create a FormData object to handle the multipart request
     const formData = new FormData();
-    formData.append("jobSeekerDTO", JSON.stringify({
-      jobSeekerId: 0,
-      jobSeekerFullName: fullName,
-      jobSeekerMobileNumber: mobileNumber,
-      jobSeekerProfileSummary: profileSummary,
-      jobSeekerExperience: experience,
-      jobSeekerEmail: email,
-      jobSeekerPassword: password,
-      skillId: skillId,
-      location: location,
-    }));
-    formData.append("resumeFile", resume); // Append the file
+    formData.append(
+      "jobSeekerDTO",
+      JSON.stringify({
+        jobSeekerId: 0,
+        jobSeekerFullName: fullName,
+        jobSeekerMobileNumber: mobileNumber,
+        jobSeekerProfileSummary: profileSummary,
+        jobSeekerExperience: experience,
+        jobSeekerEmail: email,
+        jobSeekerPassword: password,
+        skillId: skillId,
+        location: location,
+      })
+    );
+    formData.append("resumeFile", resume);
 
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/jobseekers/createJobSeeker",
+      await axios.post(
+        "https://jobportalbackend-production-d549.up.railway.app/api/jobseekers/createJobSeeker",
         formData,
         {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          headers: { "Content-Type": "multipart/form-data" },
         }
       );
       setSuccess("Job Seeker created successfully!");
+      // Clear form optionally:
+      setFullName("");
+      setEmail("");
+      setPassword("");
+      setMobileNumber("");
+      setResume(null);
+      setProfileSummary("");
+      setExperience(0);
+      setSkillId("");
+      setLocation("");
     } catch (error) {
+      console.error(error.response || error.message);
       setError("Error creating job seeker. Please try again.");
     } finally {
       setLoading(false);
@@ -193,11 +218,7 @@ function Signup() {
           {/* Resume Upload */}
           <div className="my-2">
             <Label>Resume</Label>
-            <Input
-              type="file" // Update to file input
-              name="resume"
-              onChange={handleFileChange}
-            />
+            <Input type="file" name="resume" onChange={handleFileChange} />
           </div>
 
           {/* Profile Summary */}
@@ -224,26 +245,23 @@ function Signup() {
             />
           </div>
 
-          {/* Skill ID */}
+          {/* Skill Selection */}
           <div className="my-2">
-            <Label>Skill ID</Label>
-            <Input
-              type="number"
-              name="skillId"
-              placeholder="Enter your skill ID"
-              value={skillId}
-              onChange={handleInputChange}
-            />
+            <Label>Skill</Label>
+            <Select name="skillId" value={skillId} onChange={handleInputChange}>
+              <option value="">Select your skill</option>
+              {skills.map((skill) => (
+                <option key={skill.id} value={skill.id}>
+                  {skill.name}
+                </option>
+              ))}
+            </Select>
           </div>
 
           {/* Location */}
           <div className="my-2">
             <Label>Location</Label>
-            <Select
-              name="location"
-              value={location}
-              onChange={handleInputChange}
-            >
+            <Select name="location" value={location} onChange={handleInputChange}>
               <option value="">Select your location</option>
               {countries.map((country) => (
                 <option key={country} value={country}>
@@ -261,13 +279,13 @@ function Signup() {
           <div className="my-2">
             <button
               type="submit"
-              className={`w-full px-4 py-2 bg-[#02367B] text-white font-bold rounded-md focus:outline-none ${loading ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+              className="w-full px-4 py-2 bg-[#02367B] text-white font-bold rounded-md focus:outline-none"
               disabled={loading}
             >
               {loading ? "Submitting..." : "Submit"}
             </button>
           </div>
+
           <div className="my-2">
             <Link to="/login" className="text-blue-500 hover:underline">
               Already have an account? Login

@@ -27,7 +27,7 @@ function Browse() {
       const fetchJobs = async () => {
         try {
           const response = await axios.get(
-            "http://localhost:8080/api/joblistings"
+            "https://jobportalbackend-production-d549.up.railway.app/api/joblistings"
           );
           setJobs(response.data);
           setFilteredJobs(response.data); // Initialize filtered jobs with all jobs
@@ -72,7 +72,7 @@ function Browse() {
         jobId: jobId,
       };
 
-      await axios.post("http://localhost:8080/applications/createApplication", payload);
+      await axios.post("https://jobportalbackend-production-d549.up.railway.app/applications/createApplication", payload);
 
       alert("Job applied successfully");
     } catch (error) {

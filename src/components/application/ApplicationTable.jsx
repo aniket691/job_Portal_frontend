@@ -17,7 +17,7 @@ function ApplicationTable() {
     const fetchApplications = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/applications/details"
+          "https://jobportalbackend-production-d549.up.railway.app/applications/details"
         );
         setApplications(response.data);
       } catch (error) {
@@ -33,7 +33,7 @@ function ApplicationTable() {
     try {
       // Send the update request to the backend API
       await axios.put(
-        `http://localhost:8080/applications/${applicationId}/status`,
+        `https://jobportalbackend-production-d549.up.railway.app/applications/${applicationId}/status`,
         { status: newStatus }
       );
 

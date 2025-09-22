@@ -91,7 +91,7 @@ function SignupRecruiter() {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/recruiters",
+        "https://jobportalbackend-production-d549.up.railway.app/api/recruiters",
         recruiterData,
         {
           headers: {
